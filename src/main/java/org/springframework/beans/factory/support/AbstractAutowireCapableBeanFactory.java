@@ -98,6 +98,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	protected Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
+		// 这里就是BeanFactoryAware感知的入口
 		if (bean instanceof BeanFactoryAware) {
 			((BeanFactoryAware) bean).setBeanFactory(this);
 		}
@@ -106,6 +107,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
 
 		try {
+			// 这里是调用实例的初始化方法进行初始化
+			//1.调bean的InitlizingBean接口方法
+			//2.调用户定义的init方法(这个因为方法名是用户自定义的，所以是通过反射进行调用的）
 			invokeInitMethods(beanName, wrappedBean, beanDefinition);
 		} catch (Throwable ex) {
 			throw new BeansException("Invocation of init method of bean[" + beanName + "] failed", ex);
@@ -121,6 +125,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			throws BeansException {
 		Object result = existingBean;
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
+			// 这里是ApplicationContextAware感知的入口
+			// 这个方法是值实例化之后，初始化之前的操作
 			Object current = processor.postProcessBeforeInitialization(result, beanName);
 			if (current == null) {
 				return result;
