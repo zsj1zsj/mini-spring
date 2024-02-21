@@ -25,6 +25,7 @@ public class ApplicationContextTest {
 		Car car = applicationContext.getBean("car", Car.class);
 		System.out.println(car);
 		//brand属性在CustomerBeanPostProcessor中被修改为lamborghini
+		//test repository
 		assertThat(car.getBrand()).isEqualTo("lamborghini");
 	}
 }
